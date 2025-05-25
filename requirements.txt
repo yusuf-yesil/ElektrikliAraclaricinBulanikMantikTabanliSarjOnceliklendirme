@@ -1,4 +1,4 @@
-pyqt5 5.15.11
-scikit-fuzzy 0.5.0
-matplotlib 3.7.5
-numpy 1.24.4
+pyqt5==5.15.11
+scikit-fuzzy==0.5.0
+matplotlib==3.7.5
+numpy==1.24.4
