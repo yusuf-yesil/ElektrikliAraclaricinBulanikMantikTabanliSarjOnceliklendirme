@@ -50,63 +50,31 @@ def create_control_system():
     define_membership_functions()
 
     rules = [
-        # ----- TEMEL ŞARJ SÜRESİ KURALLARI (Orijinal Kurallar) -----
-        ctrl.Rule(battery['low'] , charge_time['long']),
+        # --- ŞARJ SÜRESİ KURALLARI ---
+        ctrl.Rule(battery['low'], charge_time['long']),
         ctrl.Rule(battery['medium'] & distance['long'], charge_time['long']),
         ctrl.Rule(battery['medium'] & distance['medium'], charge_time['medium']),
         ctrl.Rule(battery['medium'] & distance['short'], charge_time['short']),
-        ctrl.Rule(battery['high'] & distance['long'], charge_time['medium']),
-        ctrl.Rule(battery['high'] & distance['medium'], charge_time['short']),
-        ctrl.Rule(battery['high'] & distance['short'], charge_time['short']),
+        ctrl.Rule(battery['high'], charge_time['short']),
 
-
-        # ----- GENİŞLETİLMİŞ ŞARJ SÜRESİ KURALLARI -----
-       
-        # Aciliyet etkileri
-        ctrl.Rule(battery['low'] & urgeness['high'], charge_time['long'] & priority['hig']),
-        ctrl.Rule(battery['medium'] & urgeness['high'], charge_time['short']),
-        
-        # Araç tipi etkileri
+        ctrl.Rule(urgeness['high'] & battery['low'], charge_time['long']),
+        ctrl.Rule(urgeness['high'] & battery['medium'], charge_time['short']),
         ctrl.Rule(car_type['premium'] & battery['low'], charge_time['medium']),
-        ctrl.Rule(car_type['highway'] & battery['medium'], charge_time['medium']),
-        ctrl.Rule(car_type['city'] & battery['high'], charge_time['short']),
-
-        # İstasyon yoğunluğu detayları
         ctrl.Rule(station_load['high'] & battery['low'], charge_time['long']),
-        ctrl.Rule(station_load['medium'] & battery['low'], charge_time['medium']),
         ctrl.Rule(station_load['low'] & battery['medium'], charge_time['short']),
 
-        # ----- TEMEL ÖNCELİK KURALLARI (Orijinal Kurallar) -----
+        # --- ÖNCELİK KURALLARI ---
         ctrl.Rule(battery['low'], priority['high']),
         ctrl.Rule(distance['long'], priority['high']),
         ctrl.Rule(urgeness['high'], priority['high']),
-        ctrl.Rule(station_load['high'], priority['high']),
         ctrl.Rule(car_type['premium'], priority['high']),
         ctrl.Rule(car_type['highway'], priority['medium']),
         ctrl.Rule(car_type['city'], priority['low']),
         ctrl.Rule(car_type['city'] & urgeness['high'], priority['medium']),
-        ctrl.Rule(car_type['highway'] & battery['low'], priority['high']),
-        ctrl.Rule(battery['high'] & urgeness['low'], priority['low']),
-
-        # ----- GENİŞLETİLMİŞ ÖNCELİK KURALLARI -----
-        # Batarya ve mesafe kombinasyonları
-        ctrl.Rule(battery['low'] & distance['medium'], priority['high']),
         ctrl.Rule(battery['medium'] & distance['long'], priority['high']),
-        ctrl.Rule(battery['high'] & distance['short'], priority['low']),
-        
-        # Aciliyet ve istasyon yoğunluğu
+        ctrl.Rule(battery['high'] & urgeness['low'], priority['low']),
         ctrl.Rule(urgeness['medium'] & station_load['high'], priority['high']),
-        ctrl.Rule(urgeness['low'] & station_load['medium'], priority['medium']),
-        
-        # Araç tipi ve diğer faktörler
-        ctrl.Rule(car_type['premium'] & urgeness['medium'], priority['high']),
-        ctrl.Rule(car_type['highway'] & station_load['low'], priority['medium']),
         ctrl.Rule(car_type['city'] & battery['high'] & urgeness['low'], priority['low']),
-        
-        # Üçlü kombinasyonlar
-        ctrl.Rule(battery['low'] & distance['short'] & urgeness['high'], priority['high']),
-        ctrl.Rule(battery['medium'] & distance['medium'] & station_load['medium'], priority['medium']),
-        ctrl.Rule(battery['high'] & distance['long'] & car_type['premium'], priority['high']),
         ctrl.Rule(battery['low'] & station_load['high'] & urgeness['medium'], priority['high']),
     ]
 
